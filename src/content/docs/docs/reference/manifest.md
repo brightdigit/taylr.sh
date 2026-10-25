@@ -56,8 +56,7 @@ let manifest = Package(
 )
 ```
 
-An open-source package that also builds with older Swift, on GitHub's runners, with Periphery
-too:
+An open-source package that also builds with older Swift, on GitHub's runners:
 
 ```swift
 let manifest = Package(
@@ -67,7 +66,6 @@ let manifest = Package(
   includeNightly: true,
   github: .init(repository: "acme/AcmeCharts"),
   ci: .githubActions(runners: .githubHosted),
-  lint: [.swiftLint, .swiftFormat, .periphery],
   license: .apache2
 )
 ```
@@ -600,14 +598,13 @@ of its own, such as `.devcontainer/swift-6.2/`.
 ### Lint
 
 ```swift
-lint: [.swiftLint, .swiftFormat, .periphery]
+lint: [.swiftLint, .swiftFormat]
 ```
 
 | Tool | Does | Configured in |
 | --- | --- | --- |
 | `.swiftLint` | Style and conventions, with [SwiftLint](https://github.com/realm/SwiftLint) | `.swiftlint.yml` |
 | `.swiftFormat` | Formatting, with Apple's [swift-format](https://github.com/swiftlang/swift-format) | `.swift-format` |
-| `.periphery` | Unused code, with [Periphery](https://github.com/peripheryapp/periphery) | `.periphery.yml` |
 
 [`taylr project lint`](/docs/cli/project/lint/), the build and CI run the ones you list. A tool
 you leave out isn't installed and has no configuration file. `[]` turns linting off.
