@@ -58,7 +58,7 @@ project only has the ones it uses. Your
 | [`appStoreConnect`](/docs/reference/manifest/#app-store-tools) | `fastlane/`, `Gemfile`, `.env.example`, Ruby in `.mise.toml` |
 | [`screenshots`](/docs/reference/manifest/#app-store-tools) | `UITests/` |
 | [`pressKit`](/docs/reference/manifest/#press-kit) | `Marketing/`, `Scripts/generate-icons.sh`, uv in `.mise.toml` |
-| [`lint`](/docs/reference/manifest/#lint) | `.swiftlint.yml`, `.swift-format`, `.periphery.yml`, and each tool in `.mise.toml` |
+| [`lint`](/docs/reference/manifest/#lint) | `.swiftlint.yml`, `.swift-format`, and each tool in `.mise.toml` |
 | [`header`](/docs/reference/manifest/#file-header) | `Scripts/header.mustache`, `Scripts/header.sh` |
 | [`ci`](/docs/reference/manifest/#ci) | `.github/workflows/` |
 | [`devcontainer`](/docs/reference/manifest/#swift-versions) | `.devcontainer/` |

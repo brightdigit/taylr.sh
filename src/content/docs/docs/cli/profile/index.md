@@ -187,7 +187,7 @@ Each value comes from the first place that has it:
 | `ci.runners` | Where macOS CI jobs run: `github-hosted` or `self-hosted`. Projects on GitHub-hosted runners record it in their [manifest](/docs/reference/manifest/#ci). | Self-hosted for private repositories, GitHub-hosted for public ones |
 | `ci.workflows` | The [workflows](/docs/reference/manifest/#ci) to add: `ci`, `appStoreMetadata`, `appStoreSession`, `cleanup`, `claude`. Packages only get `ci`, `cleanup` and `claude`. | All that apply |
 | `license.app`, `license.package` | The [license](/docs/reference/manifest/#license) for new apps and packages: `proprietary`, or a GitHub license key such as `mit` or `apache-2.0`. | `proprietary` for apps, `mit` for packages |
-| `lint` | The [lint tools](/docs/reference/manifest/#lint): `swiftLint`, `swiftFormat`, `periphery`. | `[swiftLint, swiftFormat]` |
+| `lint` | The [lint tools](/docs/reference/manifest/#lint): `swiftLint`, `swiftFormat`. | `[swiftLint, swiftFormat]` |
 | `localizations` | The [languages](/docs/reference/manifest/#localizations) of new apps. | `[en-US]` |
 | `appStoreConnect` | `fastlane` or `null`. Apps only. | `fastlane` |
 | `screenshots` | `fastlaneSnapshot` or `null`. Apps only. | `fastlaneSnapshot` with fastlane |
