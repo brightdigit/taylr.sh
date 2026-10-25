@@ -1,0 +1,29 @@
+---
+title: taylr profile default
+description: Pick the profile new projects use.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Sets which [profile](/docs/cli/profile/) new projects use.
+
+```sh
+taylr profile default client-x
+```
+
+[`taylr project create`](/docs/cli/project/create/) preselects the default when you have
+more than one profile, and uses it with `--no-interactive` unless you pass `--profile`.
+Commands that take an optional profile, such as the
+[`taylr profile secrets`](/docs/cli/profile/secrets/) subcommands, use it too.
+
+Existing projects keep the profile they were created with.
+
+## Arguments
+
+### name <Badge text="Optional" />
+
+The profile to make the default. Leave it out to print the current default.
+
+```sh
+taylr profile default [name]
+```

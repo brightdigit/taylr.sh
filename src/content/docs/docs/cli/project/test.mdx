@@ -1,0 +1,26 @@
+---
+title: taylr project test
+description: Run your project's tests.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Runs the project's tests with Swift Testing. Run it inside the project.
+
+```sh
+taylr project test
+```
+
+The tests in `AcmeApp` and `AcmeKit` run on your Mac. CI runs the same tests on every platform you chose.
+
+Teammates without taylr can run `make test`, which does the same.
+
+## Arguments
+
+### filter <Badge text="Optional" />
+
+Run only the tests whose names match.
+
+```sh
+taylr project test --filter <pattern>
+```

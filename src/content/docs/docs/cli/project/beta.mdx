@@ -1,0 +1,31 @@
+---
+title: taylr project beta
+description: Build your app and upload it to TestFlight.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Builds a signed release build and uploads it to TestFlight. Apps only. Run it inside the
+project.
+
+```sh
+taylr project beta
+```
+
+It sets the build number to one more than the latest build on TestFlight, so you never
+bump it by hand. It uses the App Store Connect key from the project's
+[profile](/docs/cli/profile/).
+
+CI runs the same upload on every push to `main`. Teammates without taylr can run `make beta`,
+which does the same.
+
+## Arguments
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project beta --profile [profile]
+```

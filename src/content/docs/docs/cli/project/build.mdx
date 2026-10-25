@@ -1,0 +1,37 @@
+---
+title: taylr project build
+description: Build your app from the command line.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Builds the project without opening Xcode. Run it inside the project.
+
+```sh
+taylr project build
+```
+
+It builds a debug build of the app. Run
+[`taylr project generate`](/docs/cli/project/generate/) first if you haven't.
+
+Teammates without taylr can run `make build`, which does the same.
+
+## Arguments
+
+### release <Badge text="Optional" />
+
+Build a signed release build for the App Store instead: an `.ipa`, or a `.pkg` on macOS. It fetches App Store certificates first, as [`taylr project certs`](/docs/cli/project/certs/)
+does. To upload the build too, use [`taylr project beta`](/docs/cli/project/beta/).
+
+```sh
+taylr project build --release
+```
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to. Only used with `--release`.
+
+```sh
+taylr project build --profile [profile]
+```

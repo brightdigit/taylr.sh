@@ -1,0 +1,30 @@
+---
+title: taylr project privacy
+description: Publish your app's App Privacy answers to App Store Connect.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Publishes your App Privacy answers (the "nutrition labels" on your App Store page) from
+`fastlane/app_privacy_details.json`. Apps only. Run it inside the project.
+
+```sh
+taylr project privacy
+```
+
+Apple doesn't accept an App Store Connect key for this, so it signs in with your Apple ID.
+If your session has expired, renew it with
+[`taylr profile secrets renew-session`](/docs/cli/profile/secrets/renew-session/).
+
+Teammates without taylr can run `make privacy-details`, which does the same.
+
+## Arguments
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project privacy --profile [profile]
+```

@@ -1,0 +1,56 @@
+---
+title: taylr project certs
+description: Fetch the signing certificates and provisioning profiles for your app.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Fetches your app's signing certificates and provisioning profiles with
+[fastlane match](https://docs.fastlane.tools/actions/match/) and installs them. Apps only.
+Run it inside the project.
+
+```sh
+taylr project certs
+```
+
+Certificates live in the private repository from your [profile](/docs/cli/profile/), so
+everyone on the team, and CI, signs with the same ones. If the app isn't registered with
+Apple yet, run [`taylr project register`](/docs/cli/project/register/) first.
+
+Teammates without taylr can run `make certs`, which does the same.
+
+## Arguments
+
+### development <Badge text="Optional" />
+
+Fetch only development certificates, for running on your devices.
+
+```sh
+taylr project certs --development
+```
+
+### app-store <Badge text="Optional" />
+
+Fetch only App Store certificates, for TestFlight and release builds.
+
+```sh
+taylr project certs --app-store
+```
+
+### regenerate <Badge text="Optional" />
+
+Recreate the provisioning profiles, for example after adding a capability or a device.
+Combine it with `--development` or `--app-store` to regenerate one kind.
+
+```sh
+taylr project certs --regenerate
+```
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project certs --profile [profile]
+```

@@ -1,0 +1,82 @@
+---
+title: taylr project validate
+description: Check that Manifest.swift and your project agree, including CI, and that the agent files are linked.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Checks that [`Manifest.swift`](/docs/reference/manifest/#app) and your app agree, and that
+`CLAUDE.md` still links to `AGENTS.md`. Run it inside the project.
+
+```sh
+taylr project validate
+```
+
+```text
+✓ Manifest.swift compiles
+✓ bundle ID      com.acmecorp.Acme matches Project.swift and fastlane/Appfile
+✓ app group      group.com.acmecorp.Acme matches Project.swift
+✓ platforms      iOS 27, macOS 27 have app targets with those deployment targets
+✓ packages       AcmeKit, AcmeApp, AcmeServer
+✓ dependencies   app → AcmeApp → AcmeKit ← AcmeServer
+✓ server         Hummingbird, OpenAPI (openapi.yaml)
+✓ web links      match fastlane/metadata/
+✓ languages      en-US, fr-FR match fastlane/metadata/
+✓ workflows      app.yml, app-store-metadata.yml, asc-session.yml, cleanup, claude on self-hosted runners
+✓ tools          fastlane, screenshots, press kit, SwiftLint, swift-format
+✓ files          LICENSE, Scripts/header.mustache, .gitattributes, .devcontainer/ for Swift 6.4
+✓ agent files    CLAUDE.md links to AGENTS.md
+```
+
+## What it checks
+
+1. **The manifest compiles.** Typos and wrong types in `Manifest.swift` are compile errors.
+2. **The IDs match.** The bundle ID and app group match `Project.swift` and
+   `fastlane/Appfile`.
+3. **The platforms match.** Each platform has an app target, and its deployment target is the
+   platform's minimum version. Each package's `Package.swift` has the minimums its own
+   `platforms` in the manifest list.
+4. **The packages match.** Each of the [`packages`](/docs/reference/manifest/#packages)
+   exists in `Packages/` with its platforms. Every dependency is in `packages`, there are no
+   cycles, the app never depends on the server, and there's at most one server. Each
+   package's `Package.swift` and the app targets in `Project.swift` have the dependencies
+   the manifest lists. The app's own packages must be linked to the target; third-party ones
+   only need to be in the package's `dependencies`. Dependencies that are only in
+   `Package.swift` are ignored. The server's framework and routing
+   match: `.openAPI` needs `openapi.yaml`.
+5. **The web links and languages match** the files in `fastlane/metadata/`, when the manifest
+   has web links: one folder for each of its [`localizations`](/docs/reference/manifest/#localizations).
+6. **The workflows match** the manifest's [`ci`](/docs/reference/manifest/#ci): each of its
+   workflows is in `.github/workflows/`, none of the others are, and their macOS jobs run on
+   its runners. Workflows of your own are ignored. The `.claude` workflows need the
+   `.claudeCode` agent, and an `.xcode(path:)` build must be one of the runners' `xcodes`.
+7. **The tools and files match.** The project has the files for each setting in the manifest,
+   and none for those it turns off: fastlane, screenshots, the press kit, each
+   [lint tool](/docs/reference/manifest/#lint), the license file, Git LFS and the dev
+   containers, with one for the oldest [Swift version](/docs/reference/manifest/#swift-versions)
+   CI tests. The [file header](/docs/reference/manifest/#file-header) template exists, and every
+   line is a `//` comment.
+8. **The agent files are linked.** `CLAUDE.md` is a symlink to `AGENTS.md`, so Claude Code
+   and other agents read the same instructions.
+
+If `CLAUDE.md` has become a regular file, move anything new in it into `AGENTS.md`, then
+restore the link:
+
+```sh
+ln -sf AGENTS.md CLAUDE.md
+```
+
+Any failed check exits with a non-zero status. It never changes a file.
+
+It doesn't read your profiles, so it works anywhere, including CI. CI runs
+`taylr project validate` on every pull request.
+
+## Arguments
+
+### json <Badge text="Optional" />
+
+Print the results as JSON, for scripts.
+
+```sh
+taylr project validate --json
+```

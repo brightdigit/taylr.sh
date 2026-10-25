@@ -1,0 +1,21 @@
+{
+  "name": "taylr-sh",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Website (docs + marketing) for the taylr CLI.",
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/starlight": "^0.41.3",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.8",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
+  }
+}

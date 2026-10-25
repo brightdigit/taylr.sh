@@ -1,0 +1,27 @@
+---
+title: taylr package clean
+description: Remove build output.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Removes `.build/`, DerivedData and other files git ignores. Run it inside the package.
+
+```sh
+taylr package clean
+```
+
+Removed files go to the Trash when the `trash` command is installed. Your `.env` and
+`.claude/settings.local.json` are kept.
+
+Teammates without taylr can run `make clean`, which does the same.
+
+## Arguments
+
+### no-interactive <Badge text="Optional" />
+
+Clean without asking you to confirm.
+
+```sh
+taylr package clean --no-interactive
+```

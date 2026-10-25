@@ -1,0 +1,30 @@
+---
+title: taylr project clean
+description: Remove build output and generated files.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Removes build output, DerivedData, the generated Xcode project and other files git ignores.
+Run it inside the project.
+
+```sh
+taylr project clean
+```
+
+Removed files go to the Trash when the `trash` command is installed. Your `.env` and
+`.claude/settings.local.json` are kept. Run
+[`taylr project generate`](/docs/cli/project/generate/) afterwards to get the Xcode project
+back.
+
+Teammates without taylr can run `make clean`, which does the same.
+
+## Arguments
+
+### no-interactive <Badge text="Optional" />
+
+Clean without asking you to confirm.
+
+```sh
+taylr project clean --no-interactive
+```

@@ -1,0 +1,53 @@
+---
+title: taylr project add-device
+description: Register a test device and add it to your development profiles.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Registers a device with your Apple Developer account and refreshes the development
+provisioning profiles so the app runs on it. Apps only. Run it inside the project.
+
+```sh
+taylr project add-device 00008110-000123456789801E --name "Leo's iPhone"
+```
+
+Find a device's UDID in Xcode under **Window ▸ Devices and Simulators**.
+
+Teammates without taylr can run `make add-dev-device UDID=… NAME=…`, which does the same.
+
+## Arguments
+
+### udid <Badge text="Required" variant="caution" />
+
+The device's UDID.
+
+```sh
+taylr project add-device <udid>
+```
+
+### name <Badge text="Optional" />
+
+A name for the device in your Apple Developer account. Without it, taylr asks. Default with
+`--no-interactive`: the UDID.
+
+```sh
+taylr project add-device <udid> --name <name>
+```
+
+### no-interactive <Badge text="Optional" />
+
+Don't ask questions. Without `--name`, the device is named after its UDID.
+
+```sh
+taylr project add-device <udid> --no-interactive
+```
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project add-device --profile [profile]
+```

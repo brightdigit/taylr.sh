@@ -1,0 +1,30 @@
+---
+title: taylr project metadata
+description: Upload your App Store listing to App Store Connect.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Uploads your App Store listing from `fastlane/metadata/` to App Store Connect: name,
+subtitle, description, keywords, web links, age rating and screenshots. It doesn't upload a
+build. Apps only. Run it inside the project.
+
+```sh
+taylr project metadata
+```
+
+Edit the text files in `fastlane/metadata/` and commit them, so your listing is reviewed like
+code. Capture screenshots with [`taylr project screenshots`](/docs/cli/project/screenshots/).
+
+Teammates without taylr can run `make sync-app-store`, which does the same.
+
+## Arguments
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project metadata --profile [profile]
+```

@@ -1,0 +1,102 @@
+# Agent Notes
+
+Standing instructions and corrections from the user. Add a line for every correction or "always/never" directive.
+
+- Whenever the user makes a correction or says to always/never do something, add a line to this file (`.agents/agent-notes.md`).
+- Every memory must also be persisted into the repo: to `MEMORY.md` AND to either `AGENTS.md` or a file under `.agents/`. Route by how quickly the fact needs to be read at launch — urgent/broad → `AGENTS.md`; lower-urgency → `.agents/`. `.agents/` ≠ `agent-notes.md` specifically (that file is only for corrections/directives).
+- Ground the docs in Swift-App-Template (`vendor/Swift-App-Template`, now a sparse checkout via `mise run vendor`, not a subrepo). Don't write CLI docs from guesswork.
+- The site's goal right now is **docs as a guide for the future implementation**. Keep the landing tiny, not a marketing page.
+- The CLI is called **taylr**. Use taylr names everywhere (e.g. `taylrVersion`, not the ADR's `satVersion`).
+- `taylr init` should be **dialog-first** (interactive prompts), not flag-first. Use Tuist's `tuist init` (Noora prompts) as the UX model.
+- taylr separates **global first-run setup** (team ID, Apple/App Store Connect auth, org, certs repo — asked once per user) from **per-app `init`** (name, platform, server). `init` should not re-ask global values.
+- taylr global config supports **multiple named profiles** (e.g. BrightDigit + client teams); `init` asks which profile.
+- Platforms use **Apple's names**: iOS, macOS, tvOS, watchOS, visionOS (never `mac`).
+- Non-interactive mode is enabled by an explicit `--no-interactive` flag.
+- CI secrets: **org-level GitHub secrets** set once by `taylr setup` (per profile), falling back to repo secrets via `gh`, then a printed checklist.
+- Auto-detection only proposes defaults the user confirms. GitHub org via `gh` by default; Xcode team detection is **experimental** (private prefs format).
+- Prompts use **Noora** (pinned exact version).
+- The docs target **users**, written as if taylr is finished (docs-first: work backwards, then build the command to match). No status labels, no ADR/phases/internals on the site.
+- **Never mention Swift-App-Template on the site.** Implementation notes (template mapping, how-to details, template changes, acceptance checks, open questions) live in `PLAN.md` at the repo root, not in published docs.
+- CLI is grouped by noun, no top-level shortcuts: `taylr profile add|list|default|secrets|remove` (per-user) and `taylr project create|generate|…` (per-project). Never document `taylr setup`, `taylr init` or top-level `taylr upgrade`.
+- The CLI reference follows **tuist.dev/docs/cli**: sidebar groups `taylr profile` and `taylr project` only (no separate CLI overview/topic pages) with a Subcommands table, one page per subcommand with an Arguments section (per-argument heading + Optional/Required badge + usage). Every subcommand gets its own page.
+- No `profile edit` for now: document editing profiles by hand in `~/.taylr/profiles/<name>.yml`. No `project configure`, no `project status`, no `project upgrade` (removed 2026-10-19).
+- User config lives in `~/.taylr/`, not `~/.config/taylr/`.
+- Platforms are multi-select. The server is two questions: Hummingbird, then OpenAPI.
+- Projects can be a Swift package instead of an app (since 2026-10-23: its own `taylr package` group, see below).
+- "Build it" is really generating the Xcode project: that's `taylr project generate`, not "building the app".
+- Don't ask for the Swift version; default to the selected Xcode's Swift.
+- Every Makefile target listed in "What's in your project" is also a `taylr project` subcommand with its own page (2026-10-19).
+- The project manifest is a **Swift file**, `Manifest.swift` at the project root, not in `.taylr/` (name provisional), modeled on Tuist's manifests. Never JSON or YAML (2026-10-19).
+- AI in 1.0 = generated Claude files + the separate plugin; `skillsApplied`/`x-swift-app:` handlers are deferred along with `project upgrade`.
+- Per-user settings in `~/.taylr/` are **YAML** files (not JSON); only the project manifest is Swift (2026-10-19).
+- Manifest API (2026-10-19): no `config` wrapper. `taylrVersion` is optional and defaults to `"1.0.0"`. Optional parameters have defaults, so never pass `nil` in examples.
+- `profile` in the manifest is `.named("<name>")` (a YAML profile) or inline with every profile key. Organization and team ID come only from the profile. The profile holds the bundle ID prefix (`bundleIDPrefix`), and bundle ID and app group are derived from it.
+- ~~`product: .app(name:)` groups the name, bundle ID and app group. A Swift-package project has **no product**, only packages.~~ Superseded 2026-10-23: `App(...)` / `Package(...)`, no `Manifest` namespace.
+- URLs are their own struct. Privacy and support are required (App Store Connect requires them) and marketing is optional. It can also take a base URL plus paths.
+- (Superseded 2026-10-23: package names are now overridable via `Package(name:)` in the package configuration.) `packages` is a configuration with presets with or without a server. The server has a framework (Hummingbird only; Vapor stays off the site) and routing (`.openAPI` or the built-in router). Package names aren't configurable: always the name plus the suffix `Kit`, `App` or `Server`.
+- The manifest has no generated files or fingerprints. `project validate` only checks that the manifest and the generated project are consistent.
+- A project is **either one Swift package or one Xcode project**, never both or layered (no "package grows into an app"). Swift packages get their own new subcommand rather than sharing `project create --kind` (2026-10-23).
+- The manifest file is always `Manifest.swift` (no `App.swift` or other per-kind file names) (2026-10-23).
+- Don't call the Swift-package manifest type `Library`: a package can hold executables, plugins and macros, not just libraries (2026-10-23).
+- No `Manifest` namespace/type is needed: an app's `Manifest.swift` builds `App(...)`, a package's builds `Package(...)` (2026-10-23).
+- The package manifest type is plain `Package`, not `SwiftPackage`. If it clashes with SwiftPM's `Package`, users write `TaylrDescription.Package` (2026-10-23).
+- An App's packages are a **configuration type** with one slot per role (shared / client / server), not arrays of packages (2026-10-23).
+- An App's package configuration has **different constructors** for the different layouts (`.appOnly(kit:)`, `.withServer(shared:client:server:framework:)`), each slot a `Package`. The server's framework/routing lives **inside** the package configuration, in the **server slot itself**, which is a `Package` made by the static method `Package.server(name:platforms:framework:)` (e.g. `server: .server(framework: .hummingbird(routing: .openAPI))`), not a separate `server:`/`framework:` argument (2026-10-23).
+- Reversed 2026-10-23: an App's packages go back to an **array** of `Package`s (the role/slot configuration type is dropped). Each `Package` lists `dependencies: [Package]` (by value, as Swift constants) and `App` has `dependencies:` for the app targets; roles (client/shared/server) come from the graph, with `Package.server(...)` marking the server.
+- App packages (2026-10-23): keep `.appOnly` and `.withServer` presets; `packages:` is a **`Packages` struct**, not a bare array (custom layouts list packages + app dependencies). `App(..., server:)` instead of `packages:` is acceptable.
+- Custom `Packages` infers its package list from `appDependencies` + `server`; `others:` holds packages nothing depends on yet. Presets (`.appOnly`, `.withServer`) take only the server package, no `kit:` override (2026-10-23).
+- App package names (2026-10-23): `*App` = the client (SwiftUI), `*Server`, `*Kit` = shared code. Always App + Kit, even without a server. The API argument is `client:` (`Packages(client:server:others:)`), but the package keeps the `App` suffix.
+- `Package` can be written as a string literal: `"AcmeApp"` means `Package(name: "AcmeApp")` (2026-10-23).
+- Project layout omits `UITests/` and `.codecov.yml`, and lists `.swiftlint.yml`, `.swift-format`, `.devcontainer/`, `.env.example`, `Gemfile`, `.gitattributes`, `Dockerfile`. Leave `project screenshots` as is (2026-10-23).
+- Generated projects ship `AGENTS.md`, with `CLAUDE.md` as a symlink to it, so other agentic tools work too (2026-10-23).
+- Don't support GitHub Copilot yet: no `.github/copilot-instructions.md` or other Copilot files in generated projects (2026-10-23).
+- `project validate` and `package validate` also check that `CLAUDE.md` is a symlink to `AGENTS.md` (2026-10-23). This widens "validate only checks manifest vs. project" above.
+- GitHub configuration lives in **both** places (2026-10-23): the profile holds defaults (`githubOrg`, `githubVisibility`, `githubRunners`) and the manifest's `github:` (`repository`, `runners`, `workflows`) records/overrides them per project. Visibility is creation-only, not in the manifest.
+- `create` offers a **git layout**: a single regular checkout or a git-worktrees structure (bare repo + a folder per branch). Profile key `gitLayout` sets the default; not in the manifest (2026-10-23).
+- Git layout clarified (2026-10-23): `single` = create the GitHub repo, then clone it into the directory (not `git init` + push); `worktrees` = a directory with a bare repo inside plus worktrees.
+- `create` writes only **non-default** values into `Manifest.swift`, depending on the arguments passed; defaults are left out (2026-10-23).
+- `--no-interactive` defaults (2026-10-23): `create` defaults to `--github`; `--server`/`--openapi` off; `add-device --name` defaults to the UDID, with a new `--no-interactive`.
+- `taylr profile secrets` is a **nested group**, not flags: `share [mode]` (no mode = re-copy everything, so no separate `push`), `set api-key|match-password`, `renew-session`; each takes `--profile` (2026-10-23).
+- No `--server-port` (2026-10-23): the server always defaults to 8080 (Hummingbird/Vapor default), changed at run time with `--port` or by editing `AcmeServer.swift` + `Dockerfile`. Not in the manifest.
+- `gitLayout` defaults to **worktrees**, not single (2026-10-23).
+- Missing profile keys (2026-10-23): keys with defaults may be omitted; keys without defaults are **prompted with hand-holding** in interactive `profile add` ("Later" allowed); a command needing a missing key **rejects it up front** naming the key — never asks mid-command.
+- GitHub flags use the `github-` prefix everywhere (`--github-repository`, `--github-visibility`, `--github-runners`, `--github-org`). `--github` is the default; `--github-*` with `--no-github` is an error (2026-10-23).
+- Manifest field tables have a **Default** column (a value, "Required" or "None: …"), like the profile's "If left out" column (2026-10-23).
+- `Package.dependencies` takes PackageDescription-shaped dependencies (`.package(url:from:)` etc.) in both root and app packages; a string/local `Package` in a **root** package's dependencies is a `validate` error. `validate` only checks the manifest's dependencies; extras in `Package.swift` are ignored. Products are undecided (2026-10-23).
+- Dependency products (2026-10-23): the manifest has no products/targets, so third-party deps are only added to `Package.swift`'s package `dependencies` (user wires `.product` into targets); local app packages (one library each, named after the package) are linked by taylr.
+- Minimum deployment targets live in `platforms`: each platform is always a call with a default version (`.iOS()` = 26, `.iOS(.v26)`, `.iOS("26.2")`); CLI `--platform iOS@26.2` (2026-10-23).
+- After the template review (2026-10-23): no Codecov; private SwiftPM dependencies unsupported in 1.0 (not on the site); package CI secrets deferred; runners follow visibility (private → self-hosted, public → GitHub-hosted); default minimum is **27**, no floor; package `platforms` work like SwiftPM's (minimums only, not inherited from the app); app targets link only the App package; CI workflow is `app.yml` / `package.yml` (changed 2026-10-24 from `<Name>.yml`); cleanup workflows are included (`.cleanup`).
+- When checking against Swift-App-Template, also check newer BrightDigit repos (AtLeast for apps, MistKit for packages): the template can be out of date.
+- taylr **creates the certs-repo deploy key** (`MATCH_GIT_PRIVATE_KEY`) in `profile add`; `profile secrets set match-deploy-key` brings your own (2026-10-24).
+- mise is **required**; `gh` is required for GitHub features (the default). Homebrew formula depends on both; `profile add` checks them first and offers to install / sign in (`admin:org` scope); `--no-interactive` fails up front with the command. No `taylr doctor` for now (2026-10-24).
+- Profile YAML is **grouped** like the manifest (`apple.*`, `signing.certsRepo`, `github.{org,ciSecrets}`); new-project defaults live in `projects:` (in a profile and/or `~/.taylr/config.yml`), and config.yml `profiles:` is a live fallback for profile keys. Order: flag → profile → config.yml → built-in (2026-10-24).
+- Configurable pieces (user, 2026-10-24): each tool taylr generates for is optional; mise stays required. SwiftLint + swift-format on by default. Tuist is modeled as a choice (XcodeGen-like alternatives later) but only Tuist is offered. Ruby/Bundler exist only for fastlane; App Store Connect tooling is `.fastlane` (default) or none. Image tooling (press kit/website icons) is uv (default) or none.
+- Never make the test framework configurable: always Swift Testing. Secrets stay in the macOS Keychain only. Changelog/versioning not configurable for now.
+- The source-file header template is a **file** (not a YAML key), per profile or per project.
+- devcontainer is **always on by default**, one per Swift version from the minimum supported to the newest; Swift nightly is an option affecting devcontainer AND CI.
+- match storage: users may pick any match backend; taylr only provisions (creates repo/bucket, keys, secrets) the ones it supports.
+- Distribution (Developer ID etc.) and screenshots are options of what taylr generates, not left to "fastlane can do it".
+- Screenshots are an optional choice (other methods may come); `nil` means no screenshots — not a boolean.
+- Profiles can be directories (the default); taylr scans all profile `.yml` files. A profile's header template defaults to a sibling file named `header` or named like the profile file; the yml can point elsewhere. The header file's extension matches the templating language.
+- Swift nightly = the version AFTER the newest stable (e.g. 6.5 when 6.4 is newest), only if a nightly exists.
+- CI matrix tiers are fixed but each tier must allow include/exclude overrides.
+- The cross-platform CI matrix builds every package for now (not only Kit/Server).
+- A profile's name is a property in its yml, not the file name/stem.
+- Keep the template's `header.sh` (bash); don't replace it with taylr. The header file gets a `.mustache` extension for a proper file type.
+- Nightly with no next-version image (e.g. no `nightly-6.5.x` yet) = no nightly entry, no warning needed. Never fall back to `nightly-main`.
+- Directory-form profiles use the same file names in every profile directory (not `<name>.yml`); duplicate `name:` values across profiles are an error.
+- Drafts never run CI: there is no `.draft` tier.
+- CI triggers on PRs only (user, 2026-10-24) — not on every push.
+- No per-package option for cross-platform builds; a per-app option may be considered.
+- Self-hosted runners list the Xcode versions available on them; by default only `/Applications/Xcode.app`.
+- License choices = whatever GitHub offers (its licenses API list); check each license's own rules for headers/notices.
+- New manifest options must keep what demo-site already documents working (don't break existing `github:`/`swiftVersion` shapes).
+- Breaking demo-site's `github:` shape is fine for CI: `github:` is the repository; runners and workflows belong under `ci:`.
+- Nightly option is named `includeNightly`.
+- Keep header `{{year}}` = lint-run year, but plan a way to tell the user when the year changes in January (headers about to be rewritten).
+- Inline profile `secrets` is an enum with associated values (`.team(_:)`, `.profile(_:)`, `.environment`), not a plain string. `.team` optionally takes a team ID. `.profile("x")` without that profile is an error — never fall back.
+- The repo will be **public**: commit only what development needs, and remove anything redundant. So the template is not vendored; `mise run vendor` sparse-checks out only the paths the docs use (2026-10-24).
+- Agent files live in `.agents/` (tool-agnostic), not `.claude/`; `.claude/` only holds symlinks. This file moved from `.claude/agent-notes.md` (2026-10-24).
+- `PLAN.md` keeps only what helps implement taylr; never restate user-facing behavior there (the docs are the spec) (2026-10-24).
+- This repo's agent instructions are `AGENTS.md`; `CLAUDE.md` is a symlink to it (2026-10-24).
+- The site must not be indexed before launch: noindex meta on every page, AI crawlers blocked in `robots.txt`; keep the sitemap (2026-10-24).

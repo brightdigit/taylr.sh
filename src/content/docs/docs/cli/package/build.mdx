@@ -1,0 +1,24 @@
+---
+title: taylr package build
+description: Build your Swift package from the command line.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Builds the package with `swift build`. Run it inside the package.
+
+```sh
+taylr package build
+```
+
+Teammates without taylr can run `make build`, which does the same.
+
+## Arguments
+
+### release <Badge text="Optional" />
+
+Build with the release configuration (`swift build -c release`).
+
+```sh
+taylr package build --release
+```

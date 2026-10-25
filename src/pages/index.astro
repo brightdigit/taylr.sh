@@ -1,0 +1,60 @@
+---
+import Landing from "../layouts/Landing.astro";
+import logoLight from "../assets/logo-light.svg";
+import logoDark from "../assets/logo-dark.svg";
+
+const DOCS = "/docs/";
+---
+
+<Landing
+  title="taylr — a Swift CLI that scaffolds Swift apps"
+  description="taylr creates complete, ready-to-ship Swift apps."
+>
+  <main class="hero">
+    <img class="brand--light" src={logoLight.src} alt="taylr" height="40" />
+    <img class="brand--dark" src={logoDark.src} alt="taylr" height="40" />
+    <h1>Scaffold a Swift app that ships from day one.</h1>
+    <p>
+      taylr is a Swift CLI that creates a complete, ready-to-ship app or Swift package.
+    </p>
+    <nav>
+      <a class="btn btn--primary" href={DOCS}>Read the docs</a>
+      <a class="btn" href="/docs/getting-started/quickstart/">Quickstart</a>
+    </nav>
+  </main>
+</Landing>
+
+<style>
+  .hero {
+    max-width: 40rem;
+    min-height: 100vh;
+    margin-inline: auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .brand--dark { display: none; }
+  :root[data-theme="dark"] .brand--light { display: none; }
+  :root[data-theme="dark"] .brand--dark { display: inline; }
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 1.5rem 0 1rem;
+  }
+  p { margin: 0 0 1.75rem; color: var(--taylr-fg-muted); font-size: 1.1rem; }
+  nav { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    padding: 0.7rem 1.35rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--taylr-border);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
+  .btn--primary { background: var(--taylr-accent-600); border-color: transparent; color: #fff; }
+  .btn--primary:hover { background: var(--taylr-accent-700); color: #fff; }
+</style>

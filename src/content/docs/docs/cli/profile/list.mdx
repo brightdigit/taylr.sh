@@ -1,0 +1,29 @@
+---
+title: taylr profile list
+description: Show your profiles, which one is the default, and anything that needs attention.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Shows each of your [profiles](/docs/cli/profile/), marks the default with `*`, and warns
+about anything that needs attention.
+
+```text
+* default    Acme Corp      ABCDE12345
+  client-x   Client X Inc   FGHIJ67890   ⚠ App Store session expires in 3 days
+```
+
+Warnings include an App Store session that has expired or is about to, and answers you
+skipped that a project now needs. Each warning names the command that fixes it, usually one of the
+[`taylr profile secrets`](/docs/cli/profile/secrets/) subcommands, or a key to fill in
+[its file in `~/.taylr/profiles/`](/docs/cli/profile/#editing-a-profile).
+
+## Arguments
+
+### json <Badge text="Optional" />
+
+Print the profiles as JSON, for scripts. Secrets are never included.
+
+```sh
+taylr profile list --json
+```

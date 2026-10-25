@@ -1,0 +1,30 @@
+---
+title: taylr project register
+description: Register your app and its app group with Apple.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Registers the app's bundle ID and app group in your Apple Developer account and creates the
+app in App Store Connect. Apps only. Run it inside the project, once, before
+[`taylr project certs`](/docs/cli/project/certs/).
+
+```sh
+taylr project register
+```
+
+It uses the Apple ID and teams from the project's [profile](/docs/cli/profile/). Running it
+again is safe: anything that already exists is left alone.
+
+Teammates without taylr can run `make setup-app setup-groups`, which does the same.
+
+## Arguments
+
+### profile <Badge text="Optional" />
+
+The named [profile](/docs/cli/profile/) whose Keychain secrets to use for this run, instead of
+the ones the project's [profile](/docs/reference/manifest/#secrets) points to.
+
+```sh
+taylr project register --profile [profile]
+```

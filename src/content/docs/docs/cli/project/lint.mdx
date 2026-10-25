@@ -1,0 +1,33 @@
+---
+title: taylr project lint
+description: Check and fix your code with SwiftLint and swift-format.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Runs the [lint tools](/docs/reference/manifest/#lint) your manifest lists (SwiftLint and
+swift-format, unless you chose otherwise) over your packages and `Project.swift`, fixing what they can fix
+automatically. It also writes the [file header](/docs/reference/manifest/#file-header) at the top
+of every Swift file. Run it inside the project.
+
+```sh
+taylr project lint
+```
+
+The rules live in `.swiftlint.yml` and `.swift-format` in your project, so you can change them.
+
+In January, the first lint updates the year in every header and tells you, so you can commit
+that change on its own. With `--strict`, a header whose only change is the year is a warning,
+not a failure.
+
+Teammates without taylr can run `make lint`, which does the same.
+
+## Arguments
+
+### strict <Badge text="Optional" />
+
+Fail on any issue instead of fixing it, as CI does.
+
+```sh
+taylr project lint --strict
+```

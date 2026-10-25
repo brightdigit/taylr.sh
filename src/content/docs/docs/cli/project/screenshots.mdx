@@ -1,0 +1,35 @@
+---
+title: taylr project screenshots
+description: Capture and frame App Store screenshots.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Runs your UI tests in the simulators to capture App Store screenshots, then frames them with
+device bezels and titles. Apps on iOS, tvOS and watchOS. Run it inside the project.
+
+```sh
+taylr project screenshots
+```
+
+Screenshots land in `fastlane/screenshots/`. Choose which screens to capture in the
+screenshot UI tests in `UITests/`. Upload them with
+[`taylr project metadata`](/docs/cli/project/metadata/).
+
+On macOS, capture screenshots by hand.
+
+Screenshots need [`screenshots: .fastlaneSnapshot`](/docs/reference/manifest/#app-store-tools) in
+the manifest, the default for apps with fastlane. Without it, the project has no `UITests/` and
+this command stops with a message.
+
+Teammates without taylr can run `make capture-all`, which does the same.
+
+## Arguments
+
+### no-frame <Badge text="Optional" />
+
+Capture screenshots without framing them.
+
+```sh
+taylr project screenshots --no-frame
+```

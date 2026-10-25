@@ -1,0 +1,391 @@
+---
+title: taylr project create
+description: Create a new Swift app by answering a few questions.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Creates a new app: a Tuist project with signing, fastlane and TestFlight CI. It asks a
+handful of questions, shows you a summary, and creates the project.
+
+For a Swift package on its own, use [`taylr package create`](/docs/cli/package/create/).
+
+```sh
+taylr project create
+```
+
+If you haven't run [`taylr profile add`](/docs/cli/profile/add/) yet, it runs first.
+
+## The questions
+
+```text
+◆ Profile    Which profile?                          default / client-x
+◆ Name       How would you like to name it?          Acme
+◆ Platforms  Which platforms?    [x] iOS  [x] macOS  [ ] tvOS  [ ] watchOS  [ ] visionOS
+◆ Server     Include a Hummingbird server?           Yes
+◆ OpenAPI    Describe the server's API with OpenAPI? Yes
+◆ Bundle ID  com.acmecorp.Acme                       ✓ / edit
+◆ Web links  Your website, for the App Store links?  https://acme.example / Later
+◆ License    Which license?                          Proprietary / MIT / Apache 2.0 / …
+◆ GitHub     Create a private GitHub repository?     Yes
+◆ Repository acme/Acme                               ✓ / edit
+◆ Git        Worktrees or a single checkout?         Worktrees / Single checkout
+◆ Summary    Create Acme? [Y/n]
+```
+
+- **Profile** is only asked when you have more than one. Your default is preselected.
+- **Name** defaults to the current folder's name. It must be a valid Swift name.
+- **Platforms**: pick one or more. Each gets the minimum version 27; set another with
+  `--platform iOS@27.2` or in the [manifest](/docs/reference/manifest/#platforms). The app
+  gets an app target for each, sharing the same code.
+- **Server** adds a [Hummingbird](https://hummingbird.codes) server package. **OpenAPI** is
+  only asked if you add the server: it describes the API in `openapi.yaml` and generates the
+  server code from it.
+- **Bundle ID** is your profile's bundle ID prefix followed by the app name. The app group
+  (`group.com.acmecorp.Acme`) follows from it. Package names come from the app name (change them in [`packages`](/docs/reference/manifest/#packages)):
+  `AcmeApp` and `AcmeKit`, plus `AcmeServer` with the server.
+- **Web links** are only needed when you submit to the App Store, which requires a privacy
+  policy and a support page. Give your website and taylr proposes `/privacy`, `/support` and
+  `/` for the marketing page; edit any of them, or enter full URLs instead. Choose "Later"
+  and add [`urls`](/docs/reference/manifest/#urls) to the manifest and the files in
+  `fastlane/metadata/` before you submit.
+- **License** is preselected from `license.app` in your
+  [project defaults](/docs/cli/profile/#project-defaults), or proprietary. taylr writes the
+  license file and the matching [file header](/docs/reference/manifest/#file-header).
+- **GitHub** needs the [GitHub CLI](https://cli.github.com). taylr creates the repository,
+  pushes the first commit and makes your [CI secrets](/docs/guides/ci-secrets/) available.
+  The repository is private or public as `github.visibility` in your [project defaults](/docs/cli/profile/#project-defaults) says.
+- **Repository** is your profile's GitHub organization and the app's name. Edit it to use
+  another owner or name.
+- **Git** picks the [git layout](/docs/reference/project/#git-layout): one ordinary
+  repository, or a folder per branch with git worktrees. `git.layout` in your project
+  defaults is preselected.
+
+Your [project defaults](/docs/cli/profile/#project-defaults) preselect the answers for platforms, server, license, GitHub and git layout.
+They also set everything taylr doesn't ask about: the CI runners and workflows, the lint tools,
+the App Store tools, screenshots, the press kit, languages, Git LFS, dev containers and AI
+agents. Pass an [argument](#arguments) to change one for this project.
+
+taylr doesn't ask which Swift version to use. It uses the one that comes with your selected
+Xcode (`xcode-select -p`), so the project builds with what you have installed.
+
+## What it does
+
+1. If you chose to, creates the GitHub repository.
+2. Sets up the folder in the [git layout](/docs/reference/project/#git-layout) you chose:
+   - **Single checkout:** clones the repository into `Acme/`. Without GitHub, runs `git init`
+     there.
+   - **Worktrees:** creates `Acme/` with a bare repository in `Acme/.bare/` and a worktree for
+     `main` in `Acme/main/`, where the project goes.
+3. Writes the project, including the license file and `Scripts/header.mustache`, a copy of your
+   profile's [file header](/docs/cli/profile/#file-header). See
+   [What's in your project](/docs/reference/project/).
+4. Records your answers in [`Manifest.swift`](/docs/reference/manifest/), leaving out any
+   that match the default. The profile is recorded by name. The
+   [GitHub](/docs/reference/manifest/#github) repository is always recorded, and so are the
+   [CI](/docs/reference/manifest/#ci) runners if they're GitHub-hosted.
+5. Makes the first commit and, with GitHub, pushes it.
+
+Next, run [`taylr project generate`](/docs/cli/project/generate/) to get the
+Xcode project.
+
+In scripts and CI, pass `--no-interactive` and give every answer as a flag:
+
+```sh
+taylr project create --no-interactive --name Acme --platform iOS --platform macOS --server --openapi
+```
+
+## Examples
+
+A public repository under another owner, with CI on your own Macs:
+
+```sh
+taylr project create --name Acme --platform iOS@27.2 \
+  --github-repository acme-labs/acme-ios --github-visibility public --ci-runners self-hosted
+```
+
+An app without fastlane, in English and French:
+
+```sh
+taylr project create --name Acme --platform macOS --no-app-store-connect \
+  --localization en-US --localization fr-FR
+```
+
+A single checkout and no GitHub repository, for a quick experiment:
+
+```sh
+taylr project create --name Sandbox --platform macOS --no-github --git-layout single
+```
+
+For a client, using their profile and its GitHub organization:
+
+```sh
+taylr project create --profile client-x --name Acme --platform iOS --platform watchOS
+```
+
+## Arguments
+
+### no-interactive <Badge text="Optional" />
+
+Don't ask questions. Answers you don't give come from your [project defaults](/docs/cli/profile/#project-defaults). A missing `--name`, or
+`--platform` without `platforms` in your project defaults, is an error.
+
+```sh
+taylr project create --no-interactive
+```
+
+### name <Badge text="Optional" />
+
+Project name. Required with `--no-interactive`.
+
+```sh
+taylr project create --name [name]
+```
+
+### platform <Badge text="Optional" />
+
+`iOS`, `macOS`, `tvOS`, `watchOS` or `visionOS`, in any capitalization. Repeat it for more
+than one platform. With `--no-interactive`, at least one is required unless your project defaults set
+`platforms`. Add `@` and a version to
+set the minimum version. Default: 27.
+
+```sh
+taylr project create --platform [platform] --platform [platform]@[version]
+taylr project create --platform iOS@27.2 --platform macOS
+```
+
+### profile <Badge text="Optional" />
+
+Profile to use. Default: your [default profile](/docs/cli/profile/default/).
+
+```sh
+taylr project create --profile [profile]
+```
+
+### server <Badge text="Optional" />
+
+Include the Hummingbird server. Default: `server` in your project defaults, or no server.
+
+```sh
+taylr project create --server
+```
+
+### openapi <Badge text="Optional" />
+
+Describe the server's API with OpenAPI and generate its code. Requires `--server`. Default: on if your project defaults
+say `server: openAPI`; otherwise you write the routes with Hummingbird's router.
+
+```sh
+taylr project create --server --openapi
+```
+
+### swift-version <Badge text="Optional" />
+
+Swift language version to use. Default: the version that comes with your selected Xcode.
+
+```sh
+taylr project create --swift-version [swift-version]
+```
+
+### bundle-id <Badge text="Optional" />
+
+Override the bundle ID. Default: your profile's bundle ID prefix followed by the name.
+
+```sh
+taylr project create --bundle-id [bundle-id]
+```
+
+### website-url <Badge text="Optional" />
+
+Your website. The App Store links default to its `/privacy`, `/support` and `/` pages.
+
+```sh
+taylr project create --website-url [url]
+```
+
+### privacy-url, support-url, marketing-url <Badge text="Optional" />
+
+Web links for the App Store, in full. Each one overrides the page from `--website-url`.
+Without `--website-url`, `--privacy-url` and `--support-url` are needed together.
+
+```sh
+taylr project create --privacy-url [url] --support-url [url] --marketing-url [url]
+```
+
+### github <Badge text="Optional" />
+
+Create the GitHub repository (`--github`), or don't (`--no-github`). Default: `github.create` in your
+project defaults, or `--github`, also with `--no-interactive`. It needs the [GitHub CLI](https://cli.github.com), signed in. The other `--github-*` options
+configure the repository, so they can't be combined with `--no-github`.
+
+```sh
+taylr project create --github
+```
+
+### github-repository <Badge text="Optional" />
+
+The GitHub repository, as `owner/name`. Default: your profile's GitHub organization and the
+name.
+
+```sh
+taylr project create --github-repository [owner/name]
+```
+
+### github-visibility <Badge text="Optional" />
+
+`private` or `public`. Default: `github.visibility` in your [project defaults](/docs/cli/profile/#project-defaults), or `private`.
+
+```sh
+taylr project create --github-visibility [visibility]
+```
+
+### ci-runners <Badge text="Optional" />
+
+Where the macOS CI jobs run: `github-hosted` or `self-hosted`. Default: `ci.runners` in your
+[project defaults](/docs/cli/profile/#project-defaults), or else `self-hosted` for a private repository and `github-hosted` for a public
+one.
+
+```sh
+taylr project create --ci-runners [runners]
+```
+
+### no-ci <Badge text="Optional" />
+
+Don't add [CI](/docs/reference/manifest/#ci): no `.github/workflows/`. Can't be combined with
+`--ci-runners`.
+
+```sh
+taylr project create --no-ci
+```
+
+### license <Badge text="Optional" />
+
+The [license](/docs/reference/manifest/#license): `proprietary`, or a GitHub license key such as
+`mit`, `apache-2.0` or `gpl-3.0`. Default: `license.app` in your [project defaults](/docs/cli/profile/#project-defaults), or `proprietary`.
+
+```sh
+taylr project create --license [license]
+```
+
+### lint <Badge text="Optional" />
+
+The [lint tools](/docs/reference/manifest/#lint), separated by commas: `swiftlint`,
+`swift-format`, `periphery`. `--no-lint` turns linting off. Default: `lint` in your project
+defaults, or `swiftlint,swift-format`.
+
+```sh
+taylr project create --lint swiftlint,swift-format,periphery
+taylr project create --no-lint
+```
+
+### header <Badge text="Optional" />
+
+A [file header](/docs/reference/manifest/#file-header) template to copy into the project.
+`--no-header` leaves headers out. Default: your profile's
+[header](/docs/cli/profile/#file-header).
+
+```sh
+taylr project create --header [path]
+taylr project create --no-header
+```
+
+### localization <Badge text="Optional" />
+
+A [language](/docs/reference/manifest/#localizations), as an App Store locale code. Repeat it
+for more than one; the first is the development language. Default: `localizations` in your
+project defaults, or `en-US`.
+
+```sh
+taylr project create --localization en-US --localization fr-FR
+```
+
+### no-app-store-connect <Badge text="Optional" />
+
+Leave out fastlane, its Ruby gems and the [signing and release
+commands](/docs/reference/manifest/#app-store-tools). Also leaves out screenshots.
+
+```sh
+taylr project create --no-app-store-connect
+```
+
+### no-screenshots <Badge text="Optional" />
+
+Leave out [App Store screenshots](/docs/reference/manifest/#app-store-tools) and their
+`UITests/` target.
+
+```sh
+taylr project create --no-screenshots
+```
+
+### no-press-kit <Badge text="Optional" />
+
+Leave out the [press kit](/docs/reference/manifest/#press-kit): the icon export script,
+`Marketing/` and uv.
+
+```sh
+taylr project create --no-press-kit
+```
+
+### cross-platform <Badge text="Optional" />
+
+Build the app's packages on Linux, Windows, Android and Wasm in [CI](/docs/reference/manifest/#build-matrix)
+(`--cross-platform`), or only on Apple platforms (`--no-cross-platform`). Default: on.
+
+```sh
+taylr project create --no-cross-platform
+```
+
+### git-lfs <Badge text="Optional" />
+
+Store images with Git LFS (`--git-lfs`), or don't (`--no-git-lfs`). Default: `gitLFS` in your
+project defaults, or on.
+
+```sh
+taylr project create --no-git-lfs
+```
+
+### no-devcontainer <Badge text="Optional" />
+
+Leave out the [dev containers](/docs/reference/manifest/#swift-versions) in `.devcontainer/`.
+
+```sh
+taylr project create --no-devcontainer
+```
+
+### include-nightly <Badge text="Optional" />
+
+Also test the next Swift's [nightly build](/docs/reference/manifest/#swift-versions), in CI and
+a dev container.
+
+```sh
+taylr project create --include-nightly
+```
+
+### agent <Badge text="Optional" />
+
+An [AI coding agent](/docs/reference/manifest/#agents) to set up: `claude-code`. `--no-agents`
+keeps only `AGENTS.md` and `.agents/`. Default: `agents` in your project defaults, or
+`claude-code`.
+
+```sh
+taylr project create --agent claude-code
+taylr project create --no-agents
+```
+
+### git-layout <Badge text="Optional" />
+
+`single` or `worktrees`. See [Git layout](/docs/reference/project/#git-layout). Default: `git.layout`
+in your [project defaults](/docs/cli/profile/#project-defaults), or `worktrees`.
+
+```sh
+taylr project create --git-layout [git-layout]
+```
+
+### path <Badge text="Optional" />
+
+Where to create the project folder. Default: the current directory.
+
+```sh
+taylr project create --path [path]
+taylr project create -p [path]
+```

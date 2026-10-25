@@ -1,0 +1,34 @@
+---
+title: taylr profile remove
+description: Delete a profile and its Keychain items.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Deletes a [profile](/docs/cli/profile/): its file in `~/.taylr/profiles/` and its Keychain items. It asks you to confirm first.
+
+```sh
+taylr profile remove client-x
+```
+
+- Secrets already copied to GitHub stay there. Remove them on GitHub if you no longer need them.
+- Projects that used the profile keep working.
+- If you remove your default profile, taylr asks which remaining profile becomes the default.
+
+## Arguments
+
+### name <Badge text="Required" variant="caution" />
+
+The profile to remove.
+
+```sh
+taylr profile remove <name>
+```
+
+### no-interactive <Badge text="Optional" />
+
+Don't ask for confirmation.
+
+```sh
+taylr profile remove <name> --no-interactive
+```

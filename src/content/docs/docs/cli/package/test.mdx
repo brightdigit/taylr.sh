@@ -1,0 +1,26 @@
+---
+title: taylr package test
+description: Run your package's tests.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Runs the package's tests with Swift Testing (`swift test`). Run it inside the package.
+
+```sh
+taylr package test
+```
+
+CI runs the same tests on every platform you chose, and on Linux, Windows, Android and Wasm.
+
+Teammates without taylr can run `make test`, which does the same.
+
+## Arguments
+
+### filter <Badge text="Optional" />
+
+Run only the tests whose names match.
+
+```sh
+taylr package test --filter <pattern>
+```

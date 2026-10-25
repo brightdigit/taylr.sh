@@ -1,0 +1,66 @@
+---
+/**
+ * Standalone layout for the marketing landing page. Starlight only wraps pages
+ * it renders from src/content/docs/, so the landing supplies its own <head>,
+ * theme handling, header, and footer. It reuses the taylr brand tokens from
+ * theme.css and matches Starlight's light/dark behavior (data-theme on <html>).
+ */
+import "../styles/theme.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- Pre-launch: keep search engines out. Remove at launch (see astro.config.mjs). -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Respect a stored Starlight theme choice; default to the OS preference. -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("starlight-theme");
+        const theme =
+          stored ||
+          (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.dataset.theme =
+          theme === "light" ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <style is:global>
+      * { box-sizing: border-box; }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--taylr-bg);
+        color: var(--taylr-fg);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.6;
+      }
+      a { color: inherit; }
+      img, svg { max-width: 100%; }
+    </style>
+  </body>
+</html>

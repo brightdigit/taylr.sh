@@ -1,0 +1,272 @@
+---
+title: taylr package create
+description: Create a new Swift package by answering a few questions.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Creates a new Swift package with tests, linting and CI. It asks a few questions, shows you a
+summary, and creates the package.
+
+```sh
+taylr package create
+```
+
+## The questions
+
+```text
+◆ Name       How would you like to name it?          Acme
+◆ Platforms  Which platforms?    [x] iOS  [x] macOS  [ ] tvOS  [ ] watchOS  [ ] visionOS
+◆ GitHub     Create a private GitHub repository?     Yes
+◆ Profile    Which profile?                          default / client-x
+◆ Git        Worktrees or a single checkout?         Worktrees / Single checkout
+◆ License    Which license?                          MIT / Apache 2.0 / Proprietary / …
+◆ Summary    Create Acme? [Y/n]
+```
+
+- **Name** defaults to the current folder's name. It must be a valid Swift name.
+- **Platforms**: pick one or more. They're written to the `platforms` of `Package.swift`,
+  with the minimum version 27. As with any Swift package, it still builds for the others. Set another with `--platform iOS@27.2` or in the
+  [manifest](/docs/reference/manifest/#platforms).
+  The package also builds on Linux, Windows, Android and Wasm.
+- **GitHub** needs the [GitHub CLI](https://cli.github.com). taylr creates the repository and
+  pushes the first commit.
+- **Profile** is only asked when you create a GitHub repository and have more than one
+  profile: the repository goes to that profile's GitHub organization. A package doesn't need
+  a profile. Without one, the repository goes to your own GitHub account, and the [project defaults](/docs/cli/profile/#project-defaults)
+  in `config.yml` apply.
+
+- **Git** picks the [git layout](/docs/reference/project/#git-layout): one ordinary
+  repository, or a folder per branch with git worktrees. `git.layout` in your project defaults
+  is preselected.
+- **License** is preselected from `license.package` in your project defaults, or MIT. taylr
+  writes the license file and the matching [file header](/docs/reference/manifest/#file-header).
+
+Your [project defaults](/docs/cli/profile/#project-defaults) preselect the answers for platforms, GitHub, git layout and license.
+They also set what taylr doesn't ask about: the CI runners and workflows (`ci`, `cleanup` and
+`claude`), the lint tools, Git LFS, dev containers and AI agents. A package ignores the
+app-only defaults, such as `server`. Pass an [argument](#arguments) to change one for this
+package.
+
+taylr doesn't ask which Swift version to use. It uses the one that comes with your selected
+Xcode (`xcode-select -p`).
+
+## What it does
+
+1. If you chose to, creates the GitHub repository.
+2. Sets up the folder in the [git layout](/docs/reference/project/#git-layout) you chose:
+   - **Single checkout:** clones the repository into `Acme/`. Without GitHub, runs `git init`
+     there.
+   - **Worktrees:** creates `Acme/` with a bare repository in `Acme/.bare/` and a worktree for
+     `main` in `Acme/main/`, where the package goes.
+3. Writes the package, including the license file and `Scripts/header.mustache`. See
+   [What's in your project](/docs/reference/project/#swift-package-layout).
+4. Records your answers in [`Manifest.swift`](/docs/reference/manifest/#package), leaving out
+   any that match the default. The [GitHub](/docs/reference/manifest/#github) repository is
+   always recorded, and so are the [CI](/docs/reference/manifest/#ci) runners if they're
+   GitHub-hosted.
+5. Makes the first commit and, with GitHub, pushes it.
+
+Open `Package.swift` in Xcode to start working.
+
+In scripts and CI, pass `--no-interactive` and give every answer as a flag:
+
+```sh
+taylr package create --no-interactive --name Acme --platform iOS --platform macOS
+```
+
+## Examples
+
+An open-source package on your own account:
+
+```sh
+taylr package create --name AcmeCharts --platform iOS --platform macOS \
+  --github-repository your-name/AcmeCharts --github-visibility public \
+  --license apache-2.0 --swift-version 6.1 --include-nightly
+```
+
+A package that stays on your Mac:
+
+```sh
+taylr package create --name Scratch --platform macOS --no-github
+```
+
+## Arguments
+
+### no-interactive <Badge text="Optional" />
+
+Don't ask questions. Answers you don't give come from your [project defaults](/docs/cli/profile/#project-defaults). A missing `--name`, or
+`--platform` without `platforms` in your project defaults, is an error.
+
+```sh
+taylr package create --no-interactive
+```
+
+### name <Badge text="Optional" />
+
+Package name. Required with `--no-interactive`.
+
+```sh
+taylr package create --name [name]
+```
+
+### platform <Badge text="Optional" />
+
+`iOS`, `macOS`, `tvOS`, `watchOS` or `visionOS`, in any capitalization. Repeat it for more
+than one platform. With `--no-interactive`, at least one is required unless your project defaults set
+`platforms`. Add `@` and a version to
+set the minimum version. Default: 27.
+
+```sh
+taylr package create --platform [platform] --platform [platform]@[version]
+taylr package create --platform iOS@27.2 --platform macOS
+```
+
+### swift-version <Badge text="Optional" />
+
+Swift language version to use. Default: the version that comes with your selected Xcode.
+
+```sh
+taylr package create --swift-version [swift-version]
+```
+
+### github <Badge text="Optional" />
+
+Create the GitHub repository (`--github`), or don't (`--no-github`). Default: `github.create` in your
+project defaults, or `--github`, also with `--no-interactive`. It needs the [GitHub CLI](https://cli.github.com), signed in. The other `--github-*` options
+configure the repository, so they can't be combined with `--no-github`.
+
+```sh
+taylr package create --github
+```
+
+### github-repository <Badge text="Optional" />
+
+The GitHub repository, as `owner/name`. Default: the profile's GitHub organization, or your
+own account, and the name.
+
+```sh
+taylr package create --github-repository [owner/name]
+```
+
+### github-visibility <Badge text="Optional" />
+
+`private` or `public`. Default: `github.visibility` in your [project defaults](/docs/cli/profile/#project-defaults), or `private`.
+
+```sh
+taylr package create --github-visibility [visibility]
+```
+
+### ci-runners <Badge text="Optional" />
+
+Where the macOS CI jobs run: `github-hosted` or `self-hosted`. Default: `ci.runners` in your
+[project defaults](/docs/cli/profile/#project-defaults), or else `self-hosted` for a private repository and `github-hosted` for a public
+one.
+
+```sh
+taylr package create --ci-runners [runners]
+```
+
+### no-ci <Badge text="Optional" />
+
+Don't add [CI](/docs/reference/manifest/#ci): no `.github/workflows/`. Can't be combined with
+`--ci-runners`.
+
+```sh
+taylr package create --no-ci
+```
+
+### license <Badge text="Optional" />
+
+The [license](/docs/reference/manifest/#license): `proprietary`, or a GitHub license key such as
+`mit`, `apache-2.0` or `gpl-3.0`. Default: `license.package` in your [project defaults](/docs/cli/profile/#project-defaults), or `mit`.
+
+```sh
+taylr package create --license [license]
+```
+
+### lint <Badge text="Optional" />
+
+The [lint tools](/docs/reference/manifest/#lint), separated by commas: `swiftlint`,
+`swift-format`, `periphery`. `--no-lint` turns linting off. Default: `lint` in your project
+defaults, or `swiftlint,swift-format`.
+
+```sh
+taylr package create --lint swiftlint,swift-format,periphery
+taylr package create --no-lint
+```
+
+### header <Badge text="Optional" />
+
+A [file header](/docs/reference/manifest/#file-header) template to copy into the project.
+`--no-header` leaves headers out. Default: your profile's
+[header](/docs/cli/profile/#file-header).
+
+```sh
+taylr package create --header [path]
+taylr package create --no-header
+```
+
+### git-lfs <Badge text="Optional" />
+
+Store images with Git LFS (`--git-lfs`), or don't (`--no-git-lfs`). Default: `gitLFS` in your
+project defaults, or off.
+
+```sh
+taylr package create --git-lfs
+```
+
+### no-devcontainer <Badge text="Optional" />
+
+Leave out the [dev containers](/docs/reference/manifest/#swift-versions) in `.devcontainer/`.
+
+```sh
+taylr package create --no-devcontainer
+```
+
+### include-nightly <Badge text="Optional" />
+
+Also test the next Swift's [nightly build](/docs/reference/manifest/#swift-versions), in CI and
+a dev container.
+
+```sh
+taylr package create --include-nightly
+```
+
+### agent <Badge text="Optional" />
+
+An [AI coding agent](/docs/reference/manifest/#agents) to set up: `claude-code`. `--no-agents`
+keeps only `AGENTS.md` and `.agents/`. Default: `agents` in your project defaults, or
+`claude-code`.
+
+```sh
+taylr package create --agent claude-code
+taylr package create --no-agents
+```
+
+### profile <Badge text="Optional" />
+
+Profile whose GitHub organization gets the repository. Default: your
+[default profile](/docs/cli/profile/default/), if you have one.
+
+```sh
+taylr package create --profile [profile]
+```
+
+### git-layout <Badge text="Optional" />
+
+`single` or `worktrees`. See [Git layout](/docs/reference/project/#git-layout). Default: `git.layout`
+in your [project defaults](/docs/cli/profile/#project-defaults), or `worktrees`.
+
+```sh
+taylr package create --git-layout [git-layout]
+```
+
+### path <Badge text="Optional" />
+
+Where to create the package folder. Default: the current directory.
+
+```sh
+taylr package create --path [path]
+taylr package create -p [path]
+```

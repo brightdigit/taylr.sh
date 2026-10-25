@@ -1,0 +1,61 @@
+---
+title: taylr package validate
+description: Check that Manifest.swift and Package.swift agree, and that the agent files are linked.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Checks that [`Manifest.swift`](/docs/reference/manifest/#package) and your package
+agree, and that `CLAUDE.md` still links to `AGENTS.md`. Run it inside the package.
+
+```sh
+taylr package validate
+```
+
+```text
+✓ Manifest.swift compiles
+✓ name           Acme matches Package.swift
+✓ platforms      iOS 27, macOS 27 match Package.swift
+✓ dependencies   swift-collections is in Package.swift
+✓ workflows      package.yml, cleanup, claude on self-hosted runners
+✓ files          LICENSE, Scripts/header.mustache, .devcontainer/ for Swift 6.2–6.4
+✓ agent files    CLAUDE.md links to AGENTS.md
+```
+
+## What it checks
+
+1. **The manifest compiles.** Typos and wrong types in `Manifest.swift` are compile errors.
+2. **The name matches** the package name in `Package.swift`.
+3. **The platforms match** the supported platforms in `Package.swift`, with the same minimum
+   versions.
+4. **The dependencies match.** Each of the manifest's
+   [`dependencies`](/docs/reference/manifest/#dependencies) is in the `dependencies` of
+   `Package.swift`. Which targets use their products is up to you. Others in
+   `Package.swift` are ignored. A package name or `Package` in `dependencies` is an error: a
+   Swift package project has no other packages to depend on.
+5. **The workflows match** the manifest's [`ci`](/docs/reference/manifest/#ci), as for
+   [an app](/docs/cli/project/validate/#what-it-checks).
+6. **The tools and files match** the manifest's lint tools, license, file header, Git LFS and dev
+   containers, as for [an app](/docs/cli/project/validate/#what-it-checks).
+7. **The agent files are linked.** `CLAUDE.md` is a symlink to `AGENTS.md`, so Claude Code
+   and other agents read the same instructions.
+
+If `CLAUDE.md` has become a regular file, move anything new in it into `AGENTS.md`, then
+restore the link:
+
+```sh
+ln -sf AGENTS.md CLAUDE.md
+```
+
+Any failed check exits with a non-zero status. It never changes a file. CI runs
+`taylr package validate` on every pull request.
+
+## Arguments
+
+### json <Badge text="Optional" />
+
+Print the results as JSON, for scripts.
+
+```sh
+taylr package validate --json
+```

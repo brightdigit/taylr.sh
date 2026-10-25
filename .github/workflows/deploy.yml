@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Allow manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Permissions the deploy-pages action needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; queue at most one more.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node version comes from mise.toml so CI matches local development.
+      - name: Set up mise (Node)
+        uses: jdx/mise-action@v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: mise run build
+
+      # --- DocC API reference injection (wired later) ---------------------
+      # The DocC static archive is built in the taylr *source* repo, not here:
+      #
+      #   swift package generate-documentation \
+      #     --disable-indexing --transform-for-static-hosting \
+      #     --hosting-base-path api --output-path ./docc-out
+      #
+      # Once that repo publishes ./docc-out as a downloadable artifact/release,
+      # uncomment the step below to fetch it and drop it into dist/api/,
+      # replacing the placeholder page. Until then, the placeholder ships.
+      #
+      # - name: Inject DocC API reference
+      #   run: |
+      #     gh release download --repo brightdigit/taylr docc-latest \
+      #       --pattern 'docc-out.zip' --output docc-out.zip
+      #     rm -rf dist/api
+      #     unzip -q docc-out.zip -d dist/api
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # --------------------------------------------------------------------
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
