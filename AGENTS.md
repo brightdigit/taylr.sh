@@ -87,12 +87,12 @@ src/
 ├─ content/docs/docs/**       Starlight docs (URLs are /docs/**)
 ├─ styles/theme.css           taylr brand tokens (light + dark)
 ├─ styles/tailwind.css        Tailwind + starlight-tailwind entry
-└─ assets/                    Logos
+└─ assets/taylr-logo.svg      The logo: one SVG, variants a–f via #taylr-a… (default d)
 public/
 ├─ api/index.html             DocC placeholder (see below)
 ├─ CNAME                      taylr.sh (apex custom domain)
 ├─ robots.txt                 pre-launch: AI crawlers blocked (see Deploy)
-└─ favicon.svg
+└─ favicon.svg                copy of src/assets/taylr-logo.svg (keep in sync)
 vendor/Swift-App-Template/     sparse template checkout (mise run vendor; git-ignored)
 astro.config.mjs              Astro + Starlight + sitemap; the docs sidebar lives here
 ```

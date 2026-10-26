@@ -26,9 +26,9 @@ export default defineConfig({
       head: [
         { tag: "meta", attrs: { name: "robots", content: "noindex, nofollow" } },
       ],
+      // One-color logo for light and dark; variants a–f via #taylr-a… (see the SVG).
       logo: {
-        light: "./src/assets/logo-light.svg",
-        dark: "./src/assets/logo-dark.svg",
+        src: "./src/assets/taylr-logo.svg",
         replacesTitle: false,
       },
       social: [
