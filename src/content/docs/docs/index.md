@@ -41,3 +41,9 @@ After that, `taylr project create` only asks about the app.
 
 1. [Install taylr](/docs/getting-started/installation/)
 2. [Create your first app](/docs/getting-started/quickstart/)
+
+## Source
+
+taylr is open source under the MIT license. The code is at
+[brightdigit/taylr](https://github.com/brightdigit/taylr), and this website's source is at
+[brightdigit/taylr.sh](https://github.com/brightdigit/taylr.sh).

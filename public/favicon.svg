@@ -1,4 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#ea540c"/>
-  <path d="M9 12h14M16 12v11" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1 3 62 62" role="img" aria-labelledby="taylr-logo-title">
+  <title id="taylr-logo-title">taylr</title>
+  <!--
+    taylr logo: the pattern-set swift, cut from four pattern pieces like a garment.
+    One color (#ea540c; inlined, the CSS custom property taylr-logo-color overrides it) on any background:
+    the seams and details are cut out with a mask, so they are transparent.
+
+    One file, six variants. Default is d.
+      As an image:   taylr-logo.svg#taylr-a … #taylr-f
+      Inlined:       <svg data-variant="a"> … "f"
+
+           wing notches  tail notch  collar  coattails  2 buttons  1 button
+      a        ✓            ✓
+      b                                ✓        ✓          ✓
+      c        ✓            ✓          ✓
+      d        ✓                       ✓        ✓                            (default)
+      e        ✓                       ✓        ✓          ✓
+      f                                ✓                               ✓
+  -->
+  <style>
+    .swift { fill: var(--taylr-logo-color, #ea540c); }
+    .notch-tail, .buttons, .button { display: none; }
+
+    #taylr-a:target ~ defs .collar, svg[data-variant="a"] .collar,
+    #taylr-a:target ~ defs .coattails, svg[data-variant="a"] .coattails,
+    #taylr-b:target ~ defs .notch-wings, svg[data-variant="b"] .notch-wings,
+    #taylr-c:target ~ defs .coattails, svg[data-variant="c"] .coattails,
+    #taylr-f:target ~ defs .notch-wings, svg[data-variant="f"] .notch-wings,
+    #taylr-f:target ~ defs .coattails, svg[data-variant="f"] .coattails { display: none; }
+
+    #taylr-a:target ~ defs .notch-tail, svg[data-variant="a"] .notch-tail,
+    #taylr-b:target ~ defs .buttons, svg[data-variant="b"] .buttons,
+    #taylr-c:target ~ defs .notch-tail, svg[data-variant="c"] .notch-tail,
+    #taylr-e:target ~ defs .buttons, svg[data-variant="e"] .buttons,
+    #taylr-f:target ~ defs .button, svg[data-variant="f"] .button { display: inline; }
+  </style>
+  <g id="taylr-a"/><g id="taylr-b"/><g id="taylr-c"/><g id="taylr-d"/><g id="taylr-e"/><g id="taylr-f"/>
+  <defs>
+    <mask id="taylr-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
+      <rect width="64" height="64" fill="#fff"/>
+      <path class="seams" fill="none" stroke="#000" stroke-width="2" d="M27.2 22.6 L26 34.5 M36.8 22.6 L38 34.5 M26.6 40 H37.4"/>
+      <path class="notch-wings" fill="#000" d="M26.6 27.3 L24.4 28.6 L26.6 29.9 Z M37.4 27.3 L39.6 28.6 L37.4 29.9 Z"/>
+      <path class="notch-tail" fill="#000" d="M30.8 40 L32 42.2 L33.2 40 Z"/>
+      <path class="collar" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M28.6 23.2 L32 28.4 L35.4 23.2"/>
+      <path class="coattails" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" d="M32 40.5 V45"/>
+      <g class="buttons" fill="#000"><circle cx="32" cy="31.6" r="0.95"/><circle cx="32" cy="35.4" r="0.95"/></g>
+      <circle class="button" fill="#000" cx="32" cy="33" r="1.1"/>
+    </mask>
+  </defs>
+  <path class="swift" mask="url(#taylr-cut)" d="M32 16 C35 16 37 19 37 23 C44 22 56 28 61 42 C53 37 45 34 38 34 L37 40 L41 52 L32 45 L23 52 L27 40 L26 34 C19 34 11 37 3 42 C8 28 20 22 27 23 C27 19 29 16 32 16 Z"/>
 </svg>

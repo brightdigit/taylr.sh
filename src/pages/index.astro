@@ -1,7 +1,6 @@
 ---
 import Landing from "../layouts/Landing.astro";
-import logoLight from "../assets/logo-light.svg";
-import logoDark from "../assets/logo-dark.svg";
+import logo from "../assets/taylr-logo.svg";
 
 const DOCS = "/docs/";
 ---
@@ -11,8 +10,10 @@ const DOCS = "/docs/";
   description="taylr creates complete, ready-to-ship Swift apps."
 >
   <main class="hero">
-    <img class="brand--light" src={logoLight.src} alt="taylr" height="40" />
-    <img class="brand--dark" src={logoDark.src} alt="taylr" height="40" />
+    <div class="brand">
+      <img src={logo.src} alt="" width="48" height="48" />
+      <span>taylr</span>
+    </div>
     <h1>Scaffold a Swift app that ships from day one.</h1>
     <p>
       taylr is a Swift CLI that creates a complete, ready-to-ship app or Swift package.
@@ -21,6 +22,11 @@ const DOCS = "/docs/";
       <a class="btn btn--primary" href={DOCS}>Read the docs</a>
       <a class="btn" href="/docs/getting-started/quickstart/">Quickstart</a>
     </nav>
+    <footer>
+      <a href="https://github.com/brightdigit/taylr">Source</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/brightdigit/taylr.sh">Website source</a>
+    </footer>
   </main>
 </Landing>
 
@@ -36,9 +42,13 @@ const DOCS = "/docs/";
     align-items: center;
     text-align: center;
   }
-  .brand--dark { display: none; }
-  :root[data-theme="dark"] .brand--light { display: none; }
-  :root[data-theme="dark"] .brand--dark { display: inline; }
+  .brand { display: flex; align-items: center; gap: 0.5rem; }
+  .brand span {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--taylr-fg);
+  }
   h1 {
     font-size: clamp(1.8rem, 5vw, 2.75rem);
     line-height: 1.1;
@@ -57,4 +67,13 @@ const DOCS = "/docs/";
   .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
   .btn--primary { background: var(--taylr-accent-600); border-color: transparent; color: #fff; }
   .btn--primary:hover { background: var(--taylr-accent-700); color: #fff; }
+  footer {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--taylr-fg-muted);
+  }
+  footer a { color: inherit; }
+  footer a:hover { color: var(--taylr-accent-600); }
 </style>
