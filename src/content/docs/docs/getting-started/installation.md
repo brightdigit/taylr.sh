@@ -7,7 +7,7 @@ description: Install taylr with Homebrew or mise.
 
 | Tool | Why taylr needs it |
 | --- | --- |
-| macOS 26 or later, with Xcode | taylr generates and builds Xcode projects. |
+| macOS, with Xcode | taylr generates and builds Xcode projects. |
 | [mise](https://mise.jdx.dev) | Installs the exact tool versions your project pins (Tuist, SwiftLint, fastlane's Ruby). Xcode builds run linting through it, so every project needs it. |
 | [GitHub CLI](https://cli.github.com) (`gh`), signed in | Creates your GitHub repository and sets up CI secrets. Only needed for GitHub features, which are on by default. Without it, use `--no-github` and set CI secrets yourself. |
 
