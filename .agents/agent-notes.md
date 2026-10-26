@@ -100,3 +100,4 @@ Standing instructions and corrections from the user. Add a line for every correc
 - `PLAN.md` keeps only what helps implement taylr; never restate user-facing behavior there (the docs are the spec) (2026-10-24).
 - This repo's agent instructions are `AGENTS.md`; `CLAUDE.md` is a symlink to it (2026-10-24).
 - The site must not be indexed before launch: noindex meta on every page, AI crawlers blocked in `robots.txt`; keep the sitemap (2026-10-24).
+- The taylr logo is a play on the Swift bird and a tailor (needle, thread, stitching, tape, shears). Draw a fresh swift; never reuse the Swift logo itself (2026-10-26).

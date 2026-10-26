@@ -31,6 +31,9 @@ export default defineConfig({
         dark: "./src/assets/logo-dark.svg",
         replacesTitle: false,
       },
+      social: [
+        { icon: "github", label: "GitHub", href: "https://github.com/brightdigit/taylr" },
+      ],
       editLink: {
         baseUrl:
           "https://github.com/brightdigit/taylr.sh/edit/main/",

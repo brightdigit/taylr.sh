@@ -21,6 +21,11 @@ const DOCS = "/docs/";
       <a class="btn btn--primary" href={DOCS}>Read the docs</a>
       <a class="btn" href="/docs/getting-started/quickstart/">Quickstart</a>
     </nav>
+    <footer>
+      <a href="https://github.com/brightdigit/taylr">Source</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/brightdigit/taylr.sh">Website source</a>
+    </footer>
   </main>
 </Landing>
 
@@ -57,4 +62,13 @@ const DOCS = "/docs/";
   .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
   .btn--primary { background: var(--taylr-accent-600); border-color: transparent; color: #fff; }
   .btn--primary:hover { background: var(--taylr-accent-700); color: #fff; }
+  footer {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--taylr-fg-muted);
+  }
+  footer a { color: inherit; }
+  footer a:hover { color: var(--taylr-accent-600); }
 </style>
