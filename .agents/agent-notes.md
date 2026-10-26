@@ -100,4 +100,7 @@ Standing instructions and corrections from the user. Add a line for every correc
 - `PLAN.md` keeps only what helps implement taylr; never restate user-facing behavior there (the docs are the spec) (2026-10-24).
 - This repo's agent instructions are `AGENTS.md`; `CLAUDE.md` is a symlink to it (2026-10-24).
 - The site must not be indexed before launch: noindex meta on every page, AI crawlers blocked in `robots.txt`; keep the sitemap (2026-10-24).
-- The taylr logo is a play on the Swift bird and a tailor (needle, thread, stitching, tape, shears). Draw a fresh swift; never reuse the Swift logo itself (2026-10-26).
+- The taylr logo is a play on the Swift bird and a tailor. Draw a fresh swift; never reuse the Swift logo itself (2026-10-26).
+- The logo must carry taylr's concept: developers **tailor** their projects to their preferences (made to measure) and get a **complete infrastructure** (the whole outfit). Generic sewing props (needle, stitching, button, spool, scissors) aren't enough on their own (2026-10-26).
+- Logo marks must still read as a bird; the swift silhouette has to survive the tailoring detail (2026-10-26).
+- Logo shortlist (2026-10-26): tape swift (tape-measure wing edges), cut-out swift (solid swift in a dashed cut line, or the dashed cut line alone), pattern-set swift (swift made of pattern pieces). Rejected: stitched patch (too vague), tape-around-the-neck, pattern sheet, measured (tape around the chest), hanger. Dropped as off-concept: needle, scissor, button, spool and t-monogram swifts.
