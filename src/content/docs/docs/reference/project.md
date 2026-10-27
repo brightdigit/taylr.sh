@@ -190,7 +190,7 @@ concurrency checking. Tests use Swift Testing.
 
 ## CI
 
-`.github/workflows/app.yml` runs on pull requests that aren't drafts, and on pushes to `main`
+`.github/workflows/integration.yml` runs on pull requests that aren't drafts, and on pushes to `main`
 and version branches:
 
 - Builds and tests on macOS for each of your platforms, and every package on Linux, Windows,
