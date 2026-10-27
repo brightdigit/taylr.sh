@@ -8,11 +8,9 @@ on:
   # Allow manual runs from the Actions tab.
   workflow_dispatch:
 
-# Permissions the deploy-pages action needs.
+# Read-only by default; only the deploy job gets the Pages permissions.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -20,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       # Node version comes from mise.toml so CI matches local development.
       - name: Set up mise (Node)
@@ -68,6 +68,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    # Permissions the deploy-pages action needs.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     # Let a running deploy finish; queue at most one more.
     concurrency:
       group: pages
@@ -76,6 +81,22 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Concurrency doesn't guarantee order, so an older build could deploy
+      # after a newer one. Skip the deploy unless this commit is still main.
+      - name: Check this commit is still main
+        id: current
+        run: |
+          head=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$head" = "${{ github.sha }}" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Skipping deploy: ${{ github.sha }} is no longer main ($head)."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Deploy to GitHub Pages
+        if: steps.current.outputs.deploy == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
