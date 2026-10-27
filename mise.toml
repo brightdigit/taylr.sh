@@ -31,6 +31,15 @@ run = "astro preview"
 description = "Type + content validation (astro check)"
 run = "astro check"
 
+# Both run against dist/, so build first: `mise run build && mise run check-links`.
+[tasks.check-links]
+description = "Fail on internal links that don't resolve in dist/"
+run = "node scripts/check-links.js"
+
+[tasks.lighthouse]
+description = "Lighthouse CI against dist/ (thresholds in lighthouserc.json)"
+run = "lhci autorun"
+
 # A sparse, pinned checkout of Swift-App-Template (git-ignored). Only the paths the
 # docs are checked against are checked out: no _reference/, SyntaxKit/ or talk material.
 [tasks.vendor]

@@ -11,7 +11,7 @@ const DOCS = "/docs/";
 >
   <main class="hero">
     <div class="brand">
-      <img src={logo.src} alt="" width="48" height="48" />
+      <img src={logo.src} alt="" width="45" height="28" />
       <span>taylr</span>
     </div>
     <h1>Scaffold a Swift app that ships from day one.</h1>
@@ -64,9 +64,9 @@ const DOCS = "/docs/";
     font-weight: 600;
     text-decoration: none;
   }
-  .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
-  .btn--primary { background: var(--taylr-accent-600); border-color: transparent; color: #fff; }
-  .btn--primary:hover { background: var(--taylr-accent-700); color: #fff; }
+  .btn:hover { border-color: var(--taylr-brand-text); color: var(--taylr-brand-text); }
+  .btn--primary { background: var(--taylr-brand-fill); border-color: transparent; color: #fff; }
+  .btn--primary:hover { background: color-mix(in srgb, var(--taylr-brand-fill) 85%, black); color: #fff; }
   footer {
     margin-top: 2.5rem;
     display: flex;
@@ -75,5 +75,5 @@ const DOCS = "/docs/";
     color: var(--taylr-fg-muted);
   }
   footer a { color: inherit; }
-  footer a:hover { color: var(--taylr-accent-600); }
+  footer a:hover { color: var(--taylr-brand-text); }
 </style>
