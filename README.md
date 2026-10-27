@@ -5,7 +5,9 @@ from [BrightDigit](https://brightdigit.com) that scaffolds and upgrades Swift ap
 
 Built with [Astro](https://astro.build) + [Starlight](https://starlight.astro.build).
 This repo is the **website only**; taylr's source code (and its DocC API reference)
-live in a separate repository.
+live in [brightdigit/taylr](https://github.com/brightdigit/taylr), which also tracks the
+work in its [milestones](https://github.com/brightdigit/taylr/milestones) and
+[issues](https://github.com/brightdigit/taylr/issues).
 
 ## Develop
 

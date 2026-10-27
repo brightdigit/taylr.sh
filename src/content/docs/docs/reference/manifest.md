@@ -56,8 +56,7 @@ let manifest = Package(
 )
 ```
 
-An open-source package that also builds with older Swift, on GitHub's runners, with Periphery
-too:
+An open-source package that also builds with older Swift, on GitHub's runners:
 
 ```swift
 let manifest = Package(
@@ -67,7 +66,6 @@ let manifest = Package(
   includeNightly: true,
   github: .init(repository: "acme/AcmeCharts"),
   ci: .githubActions(runners: .githubHosted),
-  lint: [.swiftLint, .swiftFormat, .periphery],
   license: .apache2
 )
 ```
@@ -518,7 +516,7 @@ jobs always run on GitHub's runners.
 
 | Workflow | File | What it does |
 | --- | --- | --- |
-| `.ci` | `app.yml` (`package.yml` in a package) | Builds, lints and tests pull requests and `main`. In an app, uploads `main` to TestFlight. |
+| `.ci` | `integration.yml` | Builds, lints and tests pull requests and `main`. In an app, uploads `main` to TestFlight. |
 | `.appStoreMetadata` | `app-store-metadata.yml` | Uploads the App Store listing when you run it from the Actions tab. Apps with fastlane only. |
 | `.appStoreSession` | `asc-session.yml` | Checks every week that the [App Store session](/docs/guides/ci-secrets/#keeping-the-app-store-session-fresh) hasn't expired. Apps with fastlane only. |
 | `.cleanup` | `cleanup-caches.yml`, `cleanup-pr-caches.yml` | Deletes old GitHub Actions caches, and a pull request's caches when it closes. |
@@ -555,7 +553,7 @@ ci: .githubActions(
   runners: .selfHosted(xcodes: ["/Applications/Xcode.app", "/Applications/Xcode-26.4.app"]),
   matrix: .init(
     feature: .init(include: [.linux(.jammy)]),
-    main: .init(include: [.xcode(path: "/Applications/Xcode-26.4.app")], exclude: [.android()])
+    main: .init(include: [.xcode(path: "/Applications/Xcode-26.4.app")], exclude: [.android(api: 34)])
   )
 )
 ```
@@ -600,14 +598,13 @@ of its own, such as `.devcontainer/swift-6.2/`.
 ### Lint
 
 ```swift
-lint: [.swiftLint, .swiftFormat, .periphery]
+lint: [.swiftLint, .swiftFormat]
 ```
 
 | Tool | Does | Configured in |
 | --- | --- | --- |
 | `.swiftLint` | Style and conventions, with [SwiftLint](https://github.com/realm/SwiftLint) | `.swiftlint.yml` |
 | `.swiftFormat` | Formatting, with Apple's [swift-format](https://github.com/swiftlang/swift-format) | `.swift-format` |
-| `.periphery` | Unused code, with [Periphery](https://github.com/peripheryapp/periphery) | `.periphery.yml` |
 
 [`taylr project lint`](/docs/cli/project/lint/), the build and CI run the ones you list. A tool
 you leave out isn't installed and has no configuration file. `[]` turns linting off.
