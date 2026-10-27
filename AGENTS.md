@@ -72,6 +72,8 @@ mise run dev       # local dev server with hot reload
 mise run build     # production build → dist/
 mise run preview   # serve the production build locally
 mise run check     # astro check (type + content validation)
+mise run check-links  # fail on internal links that don't resolve in dist/ (after build)
+mise run lighthouse   # Lighthouse CI against dist/ (after build; lighthouserc.json)
 mise run vendor    # check out the template reference into vendor/ (dev only)
 ```
 
@@ -93,8 +95,10 @@ public/
 ├─ CNAME                      taylr.sh (apex custom domain)
 ├─ robots.txt                 pre-launch: AI crawlers blocked (see Deploy)
 └─ favicon.svg                copy of src/assets/taylr-logo.svg (keep in sync)
+scripts/check-links.js        internal link checker; check-links.allow lists paths allowed to 404
 vendor/Swift-App-Template/     sparse template checkout (mise run vendor; git-ignored)
 astro.config.mjs              Astro + Starlight + sitemap; the docs sidebar lives here
+lighthouserc.json             Lighthouse CI pages + thresholds (a11y ≥ 0.95, others ≥ 0.9)
 ```
 
 ## Swift-App-Template reference (`vendor/`)
@@ -155,9 +159,15 @@ Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site
 publishes it to **GitHub Pages** at the apex domain `taylr.sh` (via `public/CNAME`).
 Because it's an apex custom domain, `astro.config.mjs` sets `site` but no `base` path.
 
+Every PR runs the same workflow without deploying (`astro check`, build, `check-links`), plus
+`.github/workflows/lighthouse.yml` (`mise run lighthouse`). Fix a failing Lighthouse score
+rather than lowering the threshold. The brand orange (`--taylr-accent-600`) is under 4.5:1 as
+text on light backgrounds or behind white text, so text uses 700/800 (see `src/styles/theme.css`).
+
 **The site is not indexed until taylr launches.** Every page carries
 `<meta name="robots" content="noindex, nofollow">`: Starlight's `head` in `astro.config.mjs`,
 `src/layouts/Landing.astro` and `public/api/index.html`. `public/robots.txt` blocks AI crawlers
 but lets search engines in, so they see the tag (a `Disallow: /` would hide it). The sitemap
-stays for launch. At launch, remove the three tags and decide whether to keep the AI-crawler
+stays for launch. At launch, remove the three tags, drop `"skipAudits": ["is-crawlable"]` from
+`lighthouserc.json` (it keeps the noindex tag from failing SEO), and decide whether to keep the AI-crawler
 block. The injected DocC archive has no tag; only `robots.txt` covers it.

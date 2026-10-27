@@ -65,8 +65,9 @@ const DOCS = "/docs/";
     text-decoration: none;
   }
   .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
-  .btn--primary { background: var(--taylr-accent-600); border-color: transparent; color: #fff; }
-  .btn--primary:hover { background: var(--taylr-accent-700); color: #fff; }
+  /* 700, not 600: white text on 600 is under 4.5:1. */
+  .btn--primary { background: var(--taylr-accent-700); border-color: transparent; color: #fff; }
+  .btn--primary:hover { background: var(--taylr-accent-800); color: #fff; }
   footer {
     margin-top: 2.5rem;
     display: flex;

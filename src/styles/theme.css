@@ -45,6 +45,8 @@
   --sl-color-accent-low: var(--taylr-accent-100);
   --sl-color-accent: var(--taylr-accent-600);
   --sl-color-accent-high: var(--taylr-accent-800);
+  /* Links and the site title: 600 is under 4.5:1 on white and inline-code gray. */
+  --sl-color-text-accent: var(--taylr-accent-800);
 }
 :root[data-theme="dark"] {
   --sl-color-accent-low: #3a1e0a;
