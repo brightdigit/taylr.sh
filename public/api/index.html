@@ -40,7 +40,7 @@
       @media (prefers-color-scheme: dark) {
         body { background: #0c0a09; color: #f5f5f4; }
         .card { background: #161311 !important; border-color: #292524 !important; }
-        a.back { color: #fb8a3c !important; }
+        a.back { color: #f69181 !important; }
       }
       .card {
         max-width: 34rem;
@@ -55,7 +55,7 @@
         display: inline-block;
         padding: 0.25rem 0.75rem;
         border-radius: 999px;
-        background: #c23e0c;
+        background: #c2270f;
         color: #fff;
         font-size: 0.75rem;
         font-weight: 700;
@@ -67,11 +67,19 @@
       a.back {
         display: inline-block;
         margin-top: 1rem;
-        color: #c23e0c;
+        color: #c2270f;
         font-weight: 600;
         text-decoration: none;
       }
       a.back:hover { text-decoration: underline; }
+      /* Increase Contrast: same taylr text colors as src/styles/theme.css. */
+      @media (prefers-contrast: more) {
+        .badge { background: #8e1d0b; }
+        a.back { color: #8e1d0b; }
+      }
+      @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+        a.back { color: #facac2 !important; }
+      }
       code {
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.9em;

@@ -161,8 +161,14 @@ Because it's an apex custom domain, `astro.config.mjs` sets `site` but no `base`
 
 Every PR runs the same workflow without deploying (`astro check`, build, `check-links`), plus
 `.github/workflows/lighthouse.yml` (`mise run lighthouse`). Fix a failing Lighthouse score
-rather than lowering the threshold. The brand orange (`--taylr-accent-600`) is under 4.5:1 as
-text on light backgrounds or behind white text, so text uses 700/800 (see `src/styles/theme.css`).
+rather than lowering the threshold.
+
+**Colors:** the brand color is the official Swift orange `#f05138` (`--taylr-brand`), used only for
+the logo, graphics and large type. Like Apple's system colors, text uses same-hue variants per
+appearance (`--taylr-brand-text`, `--taylr-brand-fill`: ≥ 4.5:1 on every surface, inline code
+included) and darker/lighter ones under `prefers-contrast: more` (≥ 7:1). All live in
+`src/styles/theme.css`; `public/api/index.html` repeats the hex values. Never use `--taylr-brand`
+for body text.
 
 **The site is not indexed until taylr launches.** Every page carries
 `<meta name="robots" content="noindex, nofollow">`: Starlight's `head` in `astro.config.mjs`,

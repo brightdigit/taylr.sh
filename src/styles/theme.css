@@ -1,23 +1,22 @@
 /*
  * taylr brand tokens.
- * These map Starlight's accent + gray scales to the taylr palette, and expose
- * a small set of custom properties the marketing landing uses.
+ * These map Starlight's accent colors to the taylr palette, and expose a small
+ * set of custom properties the marketing landing uses.
  *
- * Palette: a warm "tailor/thread" orange accent over Swift-adjacent slate.
- * Swap these hex values once final brand assets land.
+ * The brand color is the official Swift orange. Like Apple's system colors, it
+ * has text variants for each appearance and for Increase Contrast; all are the
+ * same hue, only lighter or darker:
+ *   --taylr-brand       logo, graphics, large display type (not body text)
+ *   --taylr-brand-text  links and accent text: >= 4.5:1 on every surface,
+ *                       inline-code backgrounds included (>= 7:1 with more contrast)
+ *   --taylr-brand-fill  backgrounds behind white text (same ratios)
+ *   --taylr-brand-tint  subtle accent backgrounds
  */
 :root {
-  /* taylr accent (orange) */
-  --taylr-accent-50: #fff6ed;
-  --taylr-accent-100: #ffe9d5;
-  --taylr-accent-200: #fed0aa;
-  --taylr-accent-300: #fdb074;
-  --taylr-accent-400: #fb8a3c;
-  --taylr-accent-500: #f96d16;
-  --taylr-accent-600: #ea540c;
-  --taylr-accent-700: #c23e0c;
-  --taylr-accent-800: #9a3312;
-  --taylr-accent-900: #7c2d12;
+  --taylr-brand: #f05138;
+  --taylr-brand-text: #c2270f;
+  --taylr-brand-fill: #c2270f;
+  --taylr-brand-tint: #fde6e3;
 
   /* Landing-page tokens */
   --taylr-bg: #ffffff;
@@ -31,6 +30,9 @@
 }
 
 :root[data-theme="dark"] {
+  --taylr-brand-text: #f69181;
+  --taylr-brand-tint: #39140e;
+
   --taylr-bg: #0c0a09;
   --taylr-bg-subtle: #161311;
   --taylr-fg: #f5f5f4;
@@ -40,16 +42,24 @@
   --taylr-code-fg: #e7e5e4;
 }
 
-/* Wire the taylr accent into Starlight's theme variables (light + dark). */
+/* Increase Contrast (macOS/iOS) and other "more contrast" settings: >= 7:1. */
+@media (prefers-contrast: more) {
+  :root {
+    --taylr-brand-text: #8e1d0b;
+    --taylr-brand-fill: #8e1d0b;
+  }
+  :root[data-theme="dark"] {
+    --taylr-brand-text: #facac2;
+  }
+}
+
+/* Wire the taylr colors into Starlight's theme variables (light + dark). */
 :root {
-  --sl-color-accent-low: var(--taylr-accent-100);
-  --sl-color-accent: var(--taylr-accent-600);
-  --sl-color-accent-high: var(--taylr-accent-800);
-  /* Links and the site title: 600 is under 4.5:1 on white and inline-code gray. */
-  --sl-color-text-accent: var(--taylr-accent-800);
+  --sl-color-accent-low: var(--taylr-brand-tint);
+  --sl-color-accent: var(--taylr-brand-fill);
+  --sl-color-accent-high: var(--taylr-brand-text);
+  --sl-color-text-accent: var(--taylr-brand-text);
 }
 :root[data-theme="dark"] {
-  --sl-color-accent-low: #3a1e0a;
-  --sl-color-accent: var(--taylr-accent-500);
-  --sl-color-accent-high: var(--taylr-accent-200);
+  --sl-color-accent: var(--taylr-brand);
 }

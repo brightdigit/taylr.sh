@@ -2,7 +2,7 @@
   <title id="taylr-logo-title">taylr</title>
   <!--
     taylr logo: the pattern-set swift, cut from four pattern pieces like a garment.
-    One color (#ea540c; inlined, the CSS custom property taylr-logo-color overrides it) on any background:
+    One color (#f05138, the official Swift orange; inlined, the CSS custom property taylr-logo-color overrides it) on any background:
     the seams and details are cut out with a mask, so they are transparent.
 
     One file, six variants. Default is d.
@@ -18,7 +18,7 @@
       f                                ✓                               ✓
   -->
   <style>
-    .swift { fill: var(--taylr-logo-color, #ea540c); }
+    .swift { fill: var(--taylr-logo-color, #f05138); }
     .notch-tail, .buttons, .button { display: none; }
 
     #taylr-a:target ~ defs .collar, svg[data-variant="a"] .collar,

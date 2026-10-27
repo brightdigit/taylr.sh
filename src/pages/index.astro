@@ -64,10 +64,9 @@ const DOCS = "/docs/";
     font-weight: 600;
     text-decoration: none;
   }
-  .btn:hover { border-color: var(--taylr-accent-600); color: var(--taylr-accent-600); }
-  /* 700, not 600: white text on 600 is under 4.5:1. */
-  .btn--primary { background: var(--taylr-accent-700); border-color: transparent; color: #fff; }
-  .btn--primary:hover { background: var(--taylr-accent-800); color: #fff; }
+  .btn:hover { border-color: var(--taylr-brand-text); color: var(--taylr-brand-text); }
+  .btn--primary { background: var(--taylr-brand-fill); border-color: transparent; color: #fff; }
+  .btn--primary:hover { background: color-mix(in srgb, var(--taylr-brand-fill) 85%, black); color: #fff; }
   footer {
     margin-top: 2.5rem;
     display: flex;
@@ -76,5 +75,5 @@ const DOCS = "/docs/";
     color: var(--taylr-fg-muted);
   }
   footer a { color: inherit; }
-  footer a:hover { color: var(--taylr-accent-600); }
+  footer a:hover { color: var(--taylr-brand-text); }
 </style>
